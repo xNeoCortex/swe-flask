@@ -961,6 +961,7 @@ def run_command(
         debugger = debug
 
     show_server_banner(debug, info.app_import_path)
+    _warn_if_ssl_warnings_enabled(cert)
 
     run_simple(
         host,
@@ -1000,6 +1001,7 @@ def shell_command() -> None:
     # Support the regular Python interpreter startup script if someone
     # is using it.
     startup = os.environ.get("PYTHONSTARTUP")
+
     if startup and os.path.isfile(startup):
         with open(startup) as f:
             eval(compile(f.read(), startup, "exec"), ctx)
@@ -1099,6 +1101,15 @@ An application to load must be given with the '--app' option,
 in the current directory.
 """,
 )
+
+def _warn_if_ssl_warnings_enabled(cert: t.Any) -> None:
+    """Show a warning if SSL warnings are enabled and cert is provided."""
+    if cert is not None and os.environ.get("FLASK_SSL_WARNINGS", "1") == "1":
+        click.secho(
+            " * Warning: SSL certificate provided. Ensure it is valid and trusted.",
+            fg="yellow",
+        )
+
 
 
 def main() -> None:
