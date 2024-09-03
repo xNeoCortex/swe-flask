@@ -253,6 +253,8 @@ class App(Scaffold):
     #: The rule object to use for URL rules created.  This is used by
     #: :meth:`add_url_rule`.  Defaults to :class:`werkzeug.routing.Rule`.
     #:
+    #: .. versionadded:: 2.3
+    #:
     #: .. versionadded:: 0.7
     url_rule_class = Rule
 
