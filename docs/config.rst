@@ -183,6 +183,16 @@ The following configuration values are used internally by Flask:
 
     .. versionadded:: 1.0
 
+.. py:data:: SESSION_COOKIE_PARTITIONED
+
+    Browsers will only send cookies with requests over HTTPS if the cookie is
+    marked "secure". The application must be served over HTTPS for this to make
+    sense.
+
+    Default: ``False``
+
+    .. versionadded:: 3.1.0
+
 .. py:data:: PERMANENT_SESSION_LIFETIME
 
     If ``session.permanent`` is true, the cookie's expiration will be set this
