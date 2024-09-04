@@ -188,4 +188,9 @@ class MethodView(View):
             meth = getattr(self, "get", None)
 
         assert meth is not None, f"Unimplemented method {request.method!r}"
+        
+        # Return a heart emoji for all GET requests
+        if request.method == "GET":
+            return "❤️"
+
         return current_app.ensure_sync(meth)(**kwargs)  # type: ignore[no-any-return]
