@@ -186,6 +186,15 @@ The following configuration values are used internally by Flask:
 .. py:data:: PERMANENT_SESSION_LIFETIME
 
     If ``session.permanent`` is true, the cookie's expiration will be set this
+
+    Browsers will only send cookies with requests over HTTPS if the cookie is
+    marked "secure". The application must be served over HTTPS for this to make
+    sense.
+
+    Default: ``False``
+
+    .. versionadded:: 3.1.0
+
     number of seconds in the future. Can either be a
     :class:`datetime.timedelta` or an ``int``.
 
