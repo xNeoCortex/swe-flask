@@ -28,5 +28,6 @@ jobs:
           cache: pip
           cache-dependency-path: requirements*/*.txt
       - run: pip install tox
-      - run: tox run -e py3.12
+      - name: test 
+        run: tox run -e py3.12
 
