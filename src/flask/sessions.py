@@ -217,6 +217,12 @@ class SessionInterface:
         """
         return app.config["SESSION_COOKIE_SECURE"]  # type: ignore[no-any-return]
 
+    def get_cookie_partitioned(self, app: Flask) -> bool:
+        """Returns True if the cookie should be partitioned. This currently
+        just returns the value of the ``SESSION_COOKIE_PARTITIONED`` setting.
+        """
+        return app.config["SESSION_COOKIE_PARTITIONED"]  # type: ignore[no-any-return]
+
     def get_cookie_samesite(self, app: Flask) -> str | None:
         """Return ``'Strict'`` or ``'Lax'`` if the cookie should use the
         ``SameSite`` attribute. This currently just returns the value of
