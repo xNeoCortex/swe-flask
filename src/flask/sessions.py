@@ -340,6 +340,7 @@ class SecureCookieSessionInterface(SessionInterface):
         secure = self.get_cookie_secure(app)
         samesite = self.get_cookie_samesite(app)
         httponly = self.get_cookie_httponly(app)
+        partitioned = app.config["SESSION_COOKIE_PARTITIONED"]
 
         # Add a "Vary: Cookie" header if the session was accessed at all.
         if session.accessed:
@@ -373,7 +374,8 @@ class SecureCookieSessionInterface(SessionInterface):
             httponly=httponly,
             domain=domain,
             path=path,
-            secure=secure,
+            secure=secure or partitioned,
             samesite=samesite,
+            partitioned="strict" if partitioned else None,
         )
         response.vary.add("Cookie")
