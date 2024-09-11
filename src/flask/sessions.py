@@ -376,14 +376,17 @@ class SecureCookieSessionInterface(SessionInterface):
         expires = self.get_expiration_time(app, session)
         val = self.get_signing_serializer(app).dumps(dict(session))  # type: ignore[union-attr]
         response.set_cookie(
-            name,
-            val,
+            name=name,
+            value=val,
             expires=expires,
             httponly=httponly,
             domain=domain,
             path=path,
             secure=secure,
-            partitioned=partitioned,
             samesite=samesite,
         )
+
+        if partitioned:
+            response.headers["Set-Cookie"] += "; Partitioned"
+
         response.vary.add("Cookie")
