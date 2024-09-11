@@ -94,6 +94,7 @@ The following configuration values are used internally by Flask:
     Default: ``None``
 
 .. py:data:: TRAP_HTTP_EXCEPTIONS
+- :data:`SESSION_COOKIE_PARTITIONED`
 
     If there is no handler for an ``HTTPException``-type exception, re-raise it
     to be handled by the interactive debugger instead of returning it as a
