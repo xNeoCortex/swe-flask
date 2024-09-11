@@ -294,6 +294,7 @@ def test_session_using_session_settings(app, client):
         SESSION_COOKIE_HTTPONLY=False,
         SESSION_COOKIE_SECURE=True,
         SESSION_COOKIE_SAMESITE="Lax",
+        SESSION_COOKIE_PARTITIONED=True,
         SESSION_COOKIE_PATH="/",
     )
 
@@ -314,6 +315,7 @@ def test_session_using_session_settings(app, client):
     assert "path=/" in cookie
     assert "secure" in cookie
     assert "httponly" not in cookie
+    assert "partitioned" in cookie
     assert "samesite" in cookie
 
     rv = client.get("/clear", "http://www.example.com:8080/test/")
@@ -324,6 +326,7 @@ def test_session_using_session_settings(app, client):
     assert "path=/" in cookie
     assert "secure" in cookie
     assert "samesite" in cookie
+    assert "partitioned" in cookie
 
 
 def test_session_using_samesite_attribute(app, client):
@@ -351,6 +354,34 @@ def test_session_using_samesite_attribute(app, client):
     rv = client.get("/")
     cookie = rv.headers["set-cookie"].lower()
     assert "samesite=lax" in cookie
+
+
+def test_session_using_partitioned_attribute(app, client):
+    @app.route("/")
+    def index():
+        flask.session["testing"] = 42
+        return "Hello World"
+
+    app.config.update(SESSION_COOKIE_PARTITIONED="invalid")
+
+    with pytest.raises(ValueError):
+        client.get("/")
+
+    app.config.update(SESSION_COOKIE_PARTITIONED=None)
+    rv = client.get("/")
+    cookie = rv.headers["set-cookie"].lower()
+    assert "partitioned" not in cookie
+
+    app.config.update(SESSION_COOKIE_PARTITIONED=False)
+    rv = client.get("/")
+    cookie = rv.headers["set-cookie"].lower()
+    assert "partitioned" not in cookie
+
+    app.config.update(SESSION_COOKIE_PARTITIONED=True)
+    rv = client.get("/")
+    cookie = rv.headers["set-cookie"].lower()
+    assert "partitioned" in cookie
+
 
 
 def test_missing_session(app):
