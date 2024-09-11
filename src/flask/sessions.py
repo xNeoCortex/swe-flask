@@ -224,6 +224,15 @@ class SessionInterface:
         """
         return app.config["SESSION_COOKIE_SAMESITE"]  # type: ignore[no-any-return]
 
+    def get_cookie_partitioned(self, app: Flask) -> bool:
+        """Return ``True`` if the cookie should use the ``Partitioned`` attribute.
+        This currently just returns the value of the
+        :data:`SESSION_COOKIE_PARTITIONED` setting.
+
+        .. versionadded:: 3.1
+        """
+        return app.config["SESSION_COOKIE_PARTITIONED"]  # type: ignore[no-any-return]
+
     def get_expiration_time(self, app: Flask, session: SessionMixin) -> datetime | None:
         """A helper method that returns an expiration date for the session
         or ``None`` if the session is linked to the browser session.  The
@@ -339,6 +348,7 @@ class SecureCookieSessionInterface(SessionInterface):
         path = self.get_cookie_path(app)
         secure = self.get_cookie_secure(app)
         samesite = self.get_cookie_samesite(app)
+        partitioned = self.get_cookie_partitioned(app)
         httponly = self.get_cookie_httponly(app)
 
         # Add a "Vary: Cookie" header if the session was accessed at all.
@@ -374,6 +384,7 @@ class SecureCookieSessionInterface(SessionInterface):
             domain=domain,
             path=path,
             secure=secure,
+            partitioned=partitioned,
             samesite=samesite,
         )
         response.vary.add("Cookie")
