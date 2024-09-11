@@ -338,13 +338,13 @@ class SecureCookieSessionInterface(SessionInterface):
         domain = self.get_cookie_domain(app)
         path = self.get_cookie_path(app)
         secure = self.get_cookie_secure(app)
+        partitioned = self.get_cookie_partitioned(app)
         samesite = self.get_cookie_samesite(app)
         httponly = self.get_cookie_httponly(app)
 
         # Add a "Vary: Cookie" header if the session was accessed at all.
         if session.accessed:
             response.vary.add("Cookie")
-
         # If the session is modified to be empty, remove the cookie.
         # If the session is empty, return without setting the cookie.
         if not session:
@@ -374,6 +374,43 @@ class SecureCookieSessionInterface(SessionInterface):
             domain=domain,
             path=path,
             secure=secure,
+            partitioned=partitioned,
             samesite=samesite,
         )
         response.vary.add("Cookie")
+
+
+# Add partitioned flag support for Werkzeug >= 3.0.0rc1 (#5122).
+# TODO: Remove when Werkzeug >= 3.0 is required.
+
+
+def _get_cookie_partitioned(self, app):
+    return app.config["SESSION_COOKIE_PARTITIONED"]
+
+
+if not hasattr(SecureCookieSessionInterface, "get_cookie_partitioned"):
+    SecureCookieSessionInterface.get_cookie_partitioned = _get_cookie_partitioned  # type: ignore[attr-defined]
+
+
+def _set_cookie(
+    self,
+    key,
+    value="",
+    max_age=None,
+    expires=None,
+    path="/",
+    domain=None,
+    secure=False,
+    httponly=False,
+    samesite=None,
+    partitioned=False,
+) -> None:
+    """Sets a cookie."""
+
+    if isinstance(key, str):
+        key = key.encode("latin1")  # type: ignore[assignment]
+
+# TODO remove when Werkzeug >= 3.0 is required (#5122).
+# Werkzeug < 3 doesn't support partitioned cookies.
+# https://github.com/pallets/werkzeug/pull/2855/files#diff-cd95d3a95564f3230d4875ac34fc9d039856b033c6b1430d5d3cc864f87cf89aL1300-L1304
+# https://github.com/pallets/werkzeug/pull/2855/files#diff-cd95d3a95564f3230d4875ac34fc9d039856b033c6b1430d5d3cc864f87cf89aR1317-R1321

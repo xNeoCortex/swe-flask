@@ -104,10 +104,16 @@ error occurs during a request.
     security risk. Do not run the development server or debugger in a
     production environment.
 
-To enable debug mode, use the ``--debug`` option.
+To use a cross-site cookie for the session, set the
+``SESSION_COOKIE_SAMESITE`` configuration value to ``'None'``. This tells the
+browser to send it for all cross-site requests, including from iframes. You
+should also set ``SESSION_COOKIE_SECURE`` to ``True`` when using this setting.
 
-.. code-block:: text
-
+To use a partitioned cookie for the session, set the
+``SESSION_COOKIE_PARTITIONED`` configuration value to ``True``. This tells the
+browser to send it for all cross-site requests, including from iframes. It will
+also implicitly set ``SESSION_COOKIE_SECURE`` to ``True`` when using this
+setting.
     $ flask --app hello run --debug
      * Serving Flask app 'hello'
      * Debug mode: on

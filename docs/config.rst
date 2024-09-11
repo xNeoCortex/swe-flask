@@ -108,6 +108,7 @@ The following configuration values are used internally by Flask:
     the error as an unhandled exception instead so that you get the interactive
     debugger. This is a more specific version of ``TRAP_HTTP_EXCEPTIONS``. If
     unset, it is enabled in debug mode.
+- :data:`SESSION_COOKIE_PARTITIONED`
 
     Default: ``None``
 
@@ -160,6 +161,12 @@ The following configuration values are used internally by Flask:
 
 .. py:data:: SESSION_COOKIE_HTTPONLY
 
+.. data:: SESSION_COOKIE_PARTITIONED
+
+    Control if the cookie should be partitioned. Defaults to ``False``. If this
+    is set to ``True`` it will also set :data:`SESSION_COOKIE_SECURE` to
+    ``True``. See :rfc:`6265bis`.
+
     Browsers will not allow JavaScript access to cookies marked as "HTTP only"
     for security.
 
@@ -197,6 +204,12 @@ The following configuration values are used internally by Flask:
 .. py:data:: SESSION_REFRESH_EACH_REQUEST
 
     Control whether the cookie is sent with every response when
+.. data:: EXPLAIN_TEMPLATE_LOADING
+
+    If this is enabled then every attempt to load a template will write an info
+    message with the resulting path or error reason. This can help track down
+    missing files or incorrect paths.
+
     ``session.permanent`` is true. Sending the cookie every time (the default)
     can more reliably keep the session from expiring, but uses more bandwidth.
     Non-permanent sessions are not affected.
